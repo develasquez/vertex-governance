@@ -1,0 +1,22 @@
+# Dependencias del Lab 1
+# ADK (framework de agentes)
+google-adk>=2.0.0
+
+# SDK de la plataforma (incluye runtime, sessions, memory, eval)
+# Nota: el paquete cambió de nombre con la plataforma (ex google-cloud-aiplatform).
+google-cloud-agentplatform[adk,runtimes]>=1.0.0
+
+# El framework ADK del runtime importa `google.cloud.aiplatform.utils`
+# (resolver nº de proyecto → ID); no viene con agentplatform.
+google-cloud-aiplatform>=1.0.0
+
+# Cliente genai (usado por ADK y por los ejemplos)
+google-genai>=1.0.0
+
+# Utilidades
+python-dotenv>=1.0.0
+
+# --- Opcional: ejemplo ejecutable de GEPA (`adk optimize`) ---
+# Trae `gepa`, `nltk` y `rouge-score`, que `adk optimize` necesita.
+# Instálalo cuando vayas a correr el demo:  pip install "google-adk[eval]"
+# (lo usa  labs/lab-03-evaluacion/gepa/  — el demo de GEPA del Lab 3 reutiliza ESTE venv)

@@ -1,0 +1,4 @@
+# Dependencias del Lab 3
+google-cloud-aiplatform[evaluation]>=1.70.0
+pandas>=2.0.0
+python-dotenv>=1.0.0

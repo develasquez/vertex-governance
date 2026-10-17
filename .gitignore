@@ -1,0 +1,79 @@
+# ─────────────────────────────────────────────────────────────
+# Python
+# ─────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+pip-wheel-metadata/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+*.log
+
+# ─────────────────────────────────────────────────────────────
+# Entornos virtuales (¡NO subir! son miles de archivos)
+# ─────────────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+.venv*/
+virtualenv/
+
+# ─────────────────────────────────────────────────────────────
+# Secretos / configuración local
+#   El .env real NUNCA se sube; el .env.example SÍ.
+# ─────────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.tfvars
+*.tfstate
+*.tfstate.*
+
+# Credenciales GCP
+*-service-account*.json
+service-account*.json
+application_default_credentials.json
+
+# ─────────────────────────────────────────────────────────────
+# Salidas de tools / artefactos de los labs
+# ─────────────────────────────────────────────────────────────
+gepa/run_dir/
+**/gepa/run_dir/
+*.evalset.result.json
+optimization_results/
+
+# ADK: sesiones locales (SQLite) — no versionar
+.adk/
+
+# ─────────────────────────────────────────────────────────────
+# Editores / IDE
+# ─────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ─────────────────────────────────────────────────────────────
+# macOS
+# ─────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# ─────────────────────────────────────────────────────────────
+# Node (por si algún dashboard lo usa)
+# ─────────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-error.log*

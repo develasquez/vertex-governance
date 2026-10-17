@@ -1,0 +1,10 @@
+{
+  "app_name": "support_agent",
+  "train_eval_set": "basic",
+  "eval_config": {
+    "criteria": {
+      "tool_trajectory_avg_score": 1.0,
+      "response_match_score": 0.8
+    }
+  }
+}

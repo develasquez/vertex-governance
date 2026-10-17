@@ -1,0 +1,44 @@
+[
+  {
+    "name": "estado_A1001",
+    "data": [
+      {
+        "query": "¿Cuál es el estado del pedido A-1001?",
+        "expected_tool_use": [
+          { "tool_name": "get_order_status", "tool_input": { "order_id": "A-1001" } }
+        ],
+        "expected_intermediate_agent_responses": [],
+        "reference": "Estado de A-1001: en tránsito. ETA: 2 días hábiles."
+      }
+    ],
+    "initial_session": { "state": {}, "app_name": "support_agent", "user_id": "user" }
+  },
+  {
+    "name": "estado_A1003",
+    "data": [
+      {
+        "query": "¿Y el pedido A-1003?",
+        "expected_tool_use": [
+          { "tool_name": "get_order_status", "tool_input": { "order_id": "A-1003" } }
+        ],
+        "expected_intermediate_agent_responses": [],
+        "reference": "Estado de A-1003: retrasado. ETA: 5 días hábiles."
+      }
+    ],
+    "initial_session": { "state": {}, "app_name": "support_agent", "user_id": "user" }
+  },
+  {
+    "name": "estado_A1002",
+    "data": [
+      {
+        "query": "Estado del pedido A-1002, por favor.",
+        "expected_tool_use": [
+          { "tool_name": "get_order_status", "tool_input": { "order_id": "A-1002" } }
+        ],
+        "expected_intermediate_agent_responses": [],
+        "reference": "Estado de A-1002: entregado."
+      }
+    ],
+    "initial_session": { "state": {}, "app_name": "support_agent", "user_id": "user" }
+  }
+]
