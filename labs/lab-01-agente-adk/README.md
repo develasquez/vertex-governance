@@ -172,7 +172,7 @@ Salida esperada (comparación):
 permite least privilege y auditoría por agente.
 
 > ⚠️ El flag `--deploy-baseline` cuesta un deploy (~2-4 min). Si no quieres gastarlo, corre el
-> script sin el flag y usa el comando `gcloud ... describe` que imprime.
+> script sin el flag y usa el comando **REST** que imprime (lee `spec.effectiveIdentity`).
 
 ---
 

@@ -22,7 +22,7 @@ despliegas, luego lo blindas y lo gobiernas, y al final lo evalúas y optimizas.
 ## Prerrequisitos comunes
 
 - Python **3.11+**
-- Google Cloud CLI (`gcloud`) con `gcloud beta` disponible
+- Google Cloud CLI (`gcloud`) **reciente** — el Lab 4 usa `agent-registry` y `network-services agent-gateways` (`gcloud components update` si faltan)
 - `pip` y (recomendado) un entorno virtual
 - Acceso a un proyecto GCP con billing **o** Starter Tier
 

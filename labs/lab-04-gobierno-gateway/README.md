@@ -47,6 +47,10 @@ flowchart LR
 
 ## Paso 1 — Ejecutar el script de gobierno
 
+> ⚙️ **Requiere un `gcloud` reciente.** Agent Registry y Agent Gateway son productos nuevos: si tu
+> CLI es vieja, faltarán `gcloud agent-registry` y `gcloud network-services agent-gateways`.
+> Actualízala antes: `gcloud components update`.
+
 El script **ejecuta directamente** los comandos. Es **idempotente** (no recrea lo que ya existe), así
 que puedes correrlo sin miedo:
 
@@ -55,11 +59,14 @@ cd labs/lab-04-gobierno-gateway
 ./governance_setup.sh   # lee ../lab-00-setup/.env automáticamente
 ```
 
-Ejecuta, en orden: **(1) Identity → (2) Registry → (3) Gateway**. Si un grupo de comandos `gcloud`
-cambió de nombre (por el rebrand), te avisa en vez de fallar.
+Ejecuta, en orden: **(0) APIs → (1) Identity → (2) Registry → (3) Gateway**. Si algún grupo de
+comandos aún no existe en tu CLI, te avisa y sigue (no aborta).
 
-**Checkpoint ✅:** obtienes la `effectiveIdentity` del agente (un `principal://…`) y se crean los
-recursos de Registry/Gateway.
+**Checkpoint ✅:** obtienes la identidad efectiva del agente (el `principal://…` de su Agent Identity)
+y se crean los recursos: dos **Services** en Agent Registry y un **Agent Gateway** (egress).
+
+> 🧩 El script liga además los **roles base** al `principalSet` del proyecto (no al `principal` de un
+> agente concreto), para que sobrevivan a los redeploys.
 
 > ⚠️ Los pasos que dependen de tu red (VPC, Private Service Connect, certificados, adjuntar
 > políticas/Model Armor al gateway) se listan al final del script como "siguientes pasos": esos sí
@@ -127,6 +134,10 @@ registros de Agent Registry. (Opción: `REMOVE_BUCKET=1` para borrar también el
 
 | Síntoma | Causa | Solución |
 |---|---|---|
+| `Invalid choice: 'reasoning-engines'` / `'agent-registry'` / `'agent-gateways'` | Tu `gcloud` es viejo: aún no trae esos grupos (Agent Runtime va por SDK/REST; Registry y Gateway llegaron después) | `gcloud components update` |
+| No se puede leer la identidad del agente | Falta el componente `alpha` en el CLI | Ya resuelto: el script usa **REST** como respaldo (no requiere alpha). |
+| `Invalid Argument Error: … protocolBinding` al registrar | Valor de binding incorrecto (MCP habla JSON-RPC, no HTTP) | Ya resuelto: el script usa `http-json` (agente) y `jsonrpc` (MCP). |
+| Agentes y MCP se registran como **Services** (no `agents`/`mcp-servers`) | En Agent Registry, `agents`/`mcp-servers` son read-only; el registro se hace con `services create` | Es el comportamiento correcto (así lo hace el script). |
 | Egress siempre `403` | Falta IAM policy ligando identidad → destino | Crea la Unified Access Policy correcta. |
 | `503` en el gateway | Red con Network Security Integration / NGFW Enterprise | No soportado; cambia de red. |
 | El gateway no ve tráfico | Agente no ruteado por el gateway | Revisa "Route Agent Runtime traffic through Agent Gateway". |

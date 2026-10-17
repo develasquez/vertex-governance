@@ -30,7 +30,7 @@ Agent Platform Evaluation*. Usamos el nombre nuevo con el antiguo entre parénte
 ## 📁 Estructura del repositorio
 
 ```
-vertex-gobern/
+vertex-governance/
 ├── README.md                        ← estás aquí (índice general)
 ├── teardown.sh                      ← borra los recursos del workshop (evita cargos)
 ├── docs/
@@ -97,7 +97,7 @@ Al terminar, cada participante será capaz de:
 ## 🧰 Prerrequisitos
 
 - Cuenta de Google Cloud con un proyecto (ver `labs/lab-00-setup/`).
-- Python 3.11+ y `gcloud`/`gcloud beta` CLI.
+- Python 3.11+ y Google Cloud CLI (`gcloud`) **reciente** — los labs usan comandos nuevos (`agent-registry`, `network-services agent-gateways`); si faltan, `gcloud components update`.
 - Familiaridad básica con Python. No se requiere experiencia previa en Vertex AI.
 - (Recomendado) ganas de romper un agente a propósito para ver los guardrails actuar.
 

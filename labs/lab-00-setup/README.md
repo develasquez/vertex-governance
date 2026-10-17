@@ -8,10 +8,10 @@
 ## 1. Requisitos
 
 - Python 3.11+
-- `gcloud` CLI y `gcloud beta`:
+- Google Cloud CLI (`gcloud`) **reciente**:
   ```bash
   gcloud --version
-  gcloud components install beta   # si falta
+  gcloud components update   # trae los comandos nuevos (Agent Registry, Agent Gateway)
   ```
 - Un proyecto GCP. Si no tienes billing, puedes usar **Starter Tier** (los primeros deploys son gratis).
 

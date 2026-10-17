@@ -7,10 +7,10 @@
 #   ./teardown.sh
 #
 # Qué borra (los que existan / estén definidos):
-#   - Agente(s) en Agent Runtime (el del Lab 1 y, si aplica, el baseline del demo de identidad)
+#   - Agente(s) de Agent Runtime (el del Lab 1 y, si aplica, el baseline del demo de identidad)
 #   - Plantilla de Model Armor (Lab 2)
 #   - Agent Gateway (Lab 4)
-#   - Registros en Agent Registry (Lab 4)
+#   - Services registrados en Agent Registry (Lab 4)
 #   - (Opcional) Bucket de staging GCS  ->  define REMOVE_BUCKET=1
 #
 # Nota: los IAM bindings del principalSet NO se borran automáticamente (son inocuos sin el agente).
@@ -48,20 +48,27 @@ echo "  • Agente Lab 1        : ${AGENT_ENGINE_ID:-<no definido>}"
 echo "  • Agente baseline     : ${AGENT_BASELINE_ID:-<no definido>}"
 echo "  • Template Model Armor: ${TEMPLATE_ID}"
 echo "  • Agent Gateway       : ${GATEWAY_NAME}"
-echo "  • Registros Registry  : ${REGISTRY_AGENT}, ${MCP_NAME}"
+echo "  • Services Registry   : ${REGISTRY_AGENT}, ${MCP_NAME}"
 [ "${REMOVE_BUCKET}" = "1" ] && echo "  • Bucket staging      : ${STAGING_BUCKET}"
 echo ""
 read -r -p "¿Continuar? [s/N] " ans
 [[ "${ans}" =~ ^[sS]$ ]] || { echo "Cancelado."; exit 0; }
 echo ""
 
+# Agent Runtime (ex Agent Engine / reasoningEngines) no tiene grupo en gcloud → se borra por REST.
 del_agent() {
-  local id="$1"
+  local id="$1" tok code
   [[ -z "${id}" ]] && { echo "ℹ️  (sin id de agente, se omite)"; return; }
   echo "▶️  Borrando agente ${id}..."
-  gcloud ai reasoning-engines delete "${id}" \
-    --project="${PROJECT_ID}" --location="${LOCATION}" --quiet \
-    && echo "   ✅ ${id} borrado" || echo "   ⚠️  no se pudo borrar ${id} (¿ya no existe?)"
+  tok="$(gcloud auth print-access-token 2>/dev/null)" || { echo "   ⚠️  sin token ADC"; return; }
+  code="$(curl -s -o /dev/null -w '%{http_code}' -X DELETE \
+    -H "Authorization: Bearer ${tok}" \
+    "https://${LOCATION}-aiplatform.googleapis.com/v1beta1/projects/${PROJECT_ID}/locations/${LOCATION}/reasoningEngines/${id}?force=true")"
+  case "${code}" in
+    2*)  echo "   ✅ ${id} borrado" ;;
+    404) echo "   ℹ️  ${id} no existe (se omite)" ;;
+    *)   echo "   ⚠️  no se pudo borrar ${id} (HTTP ${code})" ;;
+  esac
 }
 
 echo "── 1) Agent Runtime ──"
@@ -87,20 +94,20 @@ if gcloud network-services agent-gateways describe "${GATEWAY_NAME}" \
     --project="${PROJECT_ID}" --location="${LOCATION}" --quiet \
     && echo "   ✅ gateway ${GATEWAY_NAME} borrado" || echo "   ⚠️  no se pudo borrar el gateway"
 else
-  echo "   ℹ️  gateway ${GATEWAY_NAME} no existe (se omite)"
+  echo "   ℹ️  gateway ${GATEWAY_NAME} no existe (se omite / o tu gcloud es viejo)"
 fi
 
 echo ""
 echo "── 4) Agent Registry ──"
-if gcloud agent-registry --help >/dev/null 2>&1; then
-  gcloud agent-registry agents delete "${REGISTRY_AGENT}" \
-    --project="${PROJECT_ID}" --location="${LOCATION}" --quiet 2>/dev/null \
-    && echo "   ✅ agente ${REGISTRY_AGENT} desregistrado" || echo "   ℹ️  ${REGISTRY_AGENT} no estaba registrado"
-  gcloud agent-registry mcp-servers delete "${MCP_NAME}" \
-    --project="${PROJECT_ID}" --location="${LOCATION}" --quiet 2>/dev/null \
-    && echo "   ✅ MCP ${MCP_NAME} desregistrado" || echo "   ℹ️  ${MCP_NAME} no estaba registrado"
+# El registro se hizo con `services create` → se borra con `services delete`.
+if gcloud agent-registry services delete --help >/dev/null 2>&1; then
+  for svc in "${REGISTRY_AGENT}" "${MCP_NAME}"; do
+    gcloud agent-registry services delete "${svc}" \
+      --project="${PROJECT_ID}" --location="${LOCATION}" --quiet 2>/dev/null \
+      && echo "   ✅ service ${svc} eliminado" || echo "   ℹ️  ${svc} no estaba registrado"
+  done
 else
-  echo "   ⚠️  grupo 'gcloud agent-registry' no disponible (revisa la doc)"
+  echo "   ⚠️  grupo 'gcloud agent-registry' no disponible (actualiza la CLI: gcloud components update)"
 fi
 
 echo ""

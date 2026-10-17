@@ -158,11 +158,11 @@ def main() -> None:
     else:
         print(
             "\nℹ️  Corre con --deploy-baseline para comparar contra un agente sin identidad.\n"
-            "   Alternativa solo-lectura (requiere el componente 'alpha'):\n"
-            "   gcloud components install alpha\n"
-            f"   gcloud alpha ai reasoning-engines describe {AGENT_ENGINE_ID} \\\n"
-            f"     --project={PROJECT_ID} --location={LOCATION} \\\n"
-            "     --format='value(spec.effectiveIdentity)'\n"
+            "   Alternativa solo-lectura (REST; no requiere componente alpha):\n"
+            "   curl -s -H \"Authorization: Bearer $(gcloud auth print-access-token)\" \\\n"
+            f"     \"https://{LOCATION}-aiplatform.googleapis.com/v1beta1/projects/{PROJECT_ID}"
+            f"/locations/{LOCATION}/reasoningEngines/{AGENT_ENGINE_ID}\" | python3 -m json.tool\n"
+            "   # busca 'spec.effectiveIdentity'  →  el principal SPIFFE del agente\n"
         )
 
 
